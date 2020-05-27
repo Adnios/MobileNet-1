@@ -155,9 +155,10 @@ def depthwise_separable_conv2d(name, x, w_depthwise=None, w_pointwise=None, widt
                                   activation=activation,
                                   batchnorm_enabled=batchnorm_enabled, is_training=is_training)
 
+        # 修改增加最大池化
         conv_o = conv2d('pointwise', x=conv_a, w=w_pointwise, num_filters=total_num_filters, kernel_size=(1, 1),
                         initializer=initializer, l2_strength=l2_strength, bias=biases[1], activation=activation,
-                        batchnorm_enabled=batchnorm_enabled, is_training=is_training)
+                        batchnorm_enabled=batchnorm_enabled, is_training=is_training,max_pool_enabled=True)
 
     return conv_a, conv_o
 

@@ -1,9 +1,11 @@
 from utils import parse_args, create_experiment_dirs, calculate_flops
-from model import MobileNet
+from model_6 import MobileNet
+# from model import MobileNet
 from train import Train
 from data_loader import DataLoader
 from summarizer import Summarizer
 import tensorflow as tf
+from time import *
 
 
 def main():
@@ -52,9 +54,15 @@ def main():
 
     if config_args.to_test:
         print("Final test!")
-        trainer.test('val')
+        ans_list = trainer.test('val')
+        # ans_list = trainer.test('train')
+        # print(len(ans_list))
+        # print(ans_list)
         print("Testing Finished\n\n")
 
 
 if __name__ == '__main__':
+    b = time()
     main()
+    e = time()
+    print("耗时：", e - b)

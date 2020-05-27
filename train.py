@@ -1,5 +1,5 @@
 import tensorflow as tf
-from tqdm import tqdm
+from tqdm import tqdm   #进度条
 import numpy as np
 
 
@@ -59,7 +59,7 @@ class Train:
         for cur_epoch in range(self.model.global_epoch_tensor.eval(self.sess) + 1, self.args.num_epochs + 1, 1):
 
             # Initialize tqdm
-            num_iterations = self.args.train_data_size // self.args.batch_size
+            num_iterations = self.args.train_data_size // self.args.batch_size  #整除
             tqdm_batch = tqdm(self.data.generate_batch(type='train'), total=num_iterations,
                               desc="Epoch-" + str(cur_epoch) + "-")
 
@@ -133,9 +133,11 @@ class Train:
         num_iterations = self.args.test_data_size // self.args.batch_size
         tqdm_batch = tqdm(self.data.generate_batch(type=test_type), total=num_iterations,
                           desc='Testing')
+        # data_batch = self.data.generate_batch(type=test_type)
         # Initialize classification accuracy and loss lists
         loss_list = []
         acc_list = []
+        argmax_list = []
         cur_iteration = 0
 
         for X_batch, y_batch in tqdm_batch:
@@ -149,15 +151,17 @@ class Train:
             loss, acc, argmax, nodes = self.sess.run(
                 [self.model.loss, self.model.accuracy, self.model.y_out_argmax, self.model.nodes],
                 feed_dict=feed_dict)
-
+            print("实际: ", y_batch, "测试： ", argmax)
             # Append loss and accuracy
             loss_list += [loss]
             acc_list += [acc]
 
+            # argmax_list += [argmax.tolist()]
             if cur_iteration >= num_iterations - 1:
                 avg_loss = np.mean(loss_list)
                 avg_acc = np.mean(acc_list)
                 print('Test results | test_loss: ' + str(avg_loss) + ' - test_acc: ' + str(avg_acc)[:7])
-                break
-
+                return argmax
             cur_iteration += 1
+
+
